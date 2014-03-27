@@ -1,0 +1,278 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX style redefined %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%
+% Packages %
+%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage{amsmath,amssymb,latexsym} 	% AMS and other symbols 
+\usepackage{float}                    	% Improves the interface for defining floating objects
+\usepackage{fancyhdr}                 	% Pretty headers/footers
+\usepackage{hyperref}                 	% References package – hyperref load after fancyhdr
+\usepackage{etoolbox}                 	% Patching commands
+\usepackage{graphicx}                 	% Support for including graphics
+\usepackage{xcolor}                   	% Support for using colours
+%\usepackage{parskip}                  	% Disable indentation and make a newline after pargrahps
+\usepackage[noabbrev,nameinlink]{cleveref}   % Clever references. Options: "fig. [1]" --> "[Figure 1]"
+\usepackage{tikz}                     	% Drawing tool
+\usepackage{forloop}                  	% Enabling for-loops
+\usepackage{sectsty}                  	% Style redefinition on multiple depth of sections
+\usepackage{titlesec}                 	% Chapter style
+\usepackage{import}                   	% Establish input relative to a directory
+\usepackage{listings}                 	% Source code printer for LaTeX
+\usepackage{avant}                    	% Sans-serif font. Try also `helvet'
+\usepackage{lipsum}						% Lipsum for random latin text paragraphs
+\usepackage{epstopdf}					% .eps to .pdf package
+\usepackage[a4paper]{geometry} 			% Slightly wider margins than default
+\usepackage{caption}					% Expanded captions
+\usepackage{subcaption}					% Subcaptions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Setup (only one liners)          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\selectlanguage{british}
+\usetikzlibrary{arrows,shapes,positioning,topaths}
+\graphicspath{{\confdir img/}{\imgdir}}
+\newcounter{cnt}
+\newcommand{\eval}[1]{\the\numexpr #1\relax}
+\newcommand{\insertcode}[2]{\subsubsection*{#2}\lstinputlisting[style=Java]{\srcdir #1/#2}}
+
+%%%%%%%%%%%%%%%%%
+% Uncategorized %
+%%%%%%%%%%%%%%%%%
+
+% Make verbatim use \scriptsize
+\makeatletter
+\g@addto@macro\@verbatim\scriptsize
+\makeatother
+
+%%%%%%%%%%
+% Colors %
+%%%%%%%%%%
+% See https://www.dtu.dk/upload/dtu%20kommunikation/designguide/designplatform_farver2010.pdf
+\definecolor{dtured}{cmyk}{0,.91,.72,.23}
+\definecolor{dtugray}{cmyk}{0,0,0,.56}
+%\definecolor{s01}{cmyk}{}
+%\definecolor{s02}{cmyk}{}
+%\definecolor{s03}{cmyk}{}
+%\definecolor{s04}{cmyk}{}
+\definecolor{s05}{cmyk}{.0,1,.0,.0}    % magenta
+\definecolor{s06}{cmyk}{.25,1,.0,.0}
+\definecolor{s07}{cmyk}{.25,1,0,0}
+\definecolor{s08}{cmyk}{.75,1,0,0}
+\definecolor{s09}{cmyk}{.75,.75,.0,.0}
+\definecolor{s10}{cmyk}{.5,0,0,0}
+\definecolor{s11}{cmyk}{.5,.0,.0,.0}
+%\definecolor{s12}{cmyk}{}
+\definecolor{s13}{cmyk}{.75,.50,.0,.0} % blue
+\definecolor{s14}{cmyk}{.5,0,1,0}      % green
+\definecolor{s14a}{cmyk}{.6,0,1,.25}      % green
+
+%%%%%%%%%%%%%%%
+% Hyper setup %
+%%%%%%%%%%%%%%%
+\hypersetup{
+    bookmarksnumbered=true,
+    bookmarksopen,
+    breaklinks,
+    colorlinks,
+    linktoc=all,
+    plainpages=false,
+    unicode=true,
+    citecolor=dtured,          % color of links to bibliography
+    filecolor=dtured,          % color of file links
+    linkcolor=blue,          % color of internal links (change box color with linkbordercolor)
+    urlcolor=s13         % color of external links
+}
+
+%%%%%%%%%%%%%
+% Titlepage %
+%%%%%%%%%%%%%
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\inserttitlepage}{\pagenumbering{alph}\input{\confdir titlepage}}
+
+%%%%%%%%%%%%%%%%%%%%%
+% Table of contents %
+%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\inserttoc}{\pagenumbering{roman}\tableofcontents\newpage\pagenumbering{arabic}\setcounter{page}{1}}
+
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{2}
+
+%%%%%%%%%%%%%%%%%
+% Chapter style %
+%%%%%%%%%%%%%%%%%
+\newlength{\chapterfontsize}
+\setlength{\chapterfontsize}{32pt}
+\titleformat{\chapter}[display]
+    {\sffamily}                            % format
+{\large\textsc{\color{dtugray}\chaptertitlename}~~\fontsize{34}{34}\selectfont\color{dtured}\thechapter} % label
+    {-3ex}                                 % seperation between label and chapter title
+    {\filleft\fontsize{\chapterfontsize}{\chapterfontsize}\selectfont} % before chapter title
+    [\hrule]                               % after chapter title
+
+\titlespacing*{\chapter}{0pt}{0pt}{10pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header and footer setup %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+
+\fancyhead{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+%\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markboth{\thesection.\ #1}{}}
+
+% Header
+\lhead{\footnotesize\sffamily \nouppercase{\sffamily\leftmark}}
+\chead{}
+\rhead{}
+
+% Footer
+\lfoot{\tiny\sffamily
+    \begin{tabular}{ll} 
+        \forloop[2]{cnt}{1}{\value{cnt} < \eval{\value{authorcnt}+1}}{%
+            \authorname{\thecnt} & \authorname{\eval{\thecnt+1}} \\
+        }
+    \end{tabular}
+}
+\cfoot{}
+\rfoot{\small \thepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Course and subject configuration setup %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\courseno{\textit{COURSE NUMBER}}
+\def\coursename{\textit{COURSE NAME}}
+\def\title{\textit{TITLE}}
+\def\subtitle{\textit{SUBTITLE}}
+\def\date{\textit{DATE}}
+
+\newcommand{\setcourse}[2]{%
+    \def\courseno{#1}%
+    \def\coursename{#2}%
+}
+\newcommand{\settitle}[1]{%
+    \def\title{#1}%
+}
+\newcommand{\setsubtitle}[1]{%
+    \def\subtitle{#1}%
+}
+\newcommand{\setdate}[1]{%
+    \def\date{#1}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author configuration setup %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{authorcnt}
+% Add a new author
+\newcommand{\addauthor}[3]{%
+    \stepcounter{authorcnt}%
+    \csdef{author_sno\theauthorcnt}{#1}
+    \csdef{author_fname\theauthorcnt}{#2}
+    \csdef{author_lname\theauthorcnt}{#3}
+}  
+% Set a specific author
+\newcommand{\setauthor}[4]{%
+    \csdef{author_sno#1}{#2}
+    \csdef{author_fname#1}{#3}
+    \csdef{author_lname#1}{#4}
+}
+% Get formatted name of author
+\newcommand{\authorname}[1]{%
+    \csuse{author_fname#1} \csuse{author_lname#1}%
+}
+% Get study number of author
+\newcommand{\authorsno}[1]{%
+    \csuse{author_sno#1}%
+}
+
+%%%%%%%%%%%%%
+% Todo list %
+%%%%%%%%%%%%%
+\makeatletter \newcommand \listoftodos{\section*{Todo list} \@starttoc{tdo}}
+\newcommand\l@todo[2]
+{\noindent \textit{#2} : \parbox{10cm}{#1} \par\vspace{8pt}} \makeatother
+
+\newcommand{\todo}[1]{
+   \addcontentsline{tdo}{todo}{\protect{#1}}
+   \marginpar{#1}
+}
+
+%%%%%%%%%%%%
+% Listings %
+%%%%%%%%%%%%
+\crefname{lstlisting}{listing}{listings}
+\Crefname{lstlisting}{Listing}{Listings}
+\lstset{%
+  backgroundcolor=\color{white},  % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize\ttfamily,       % the size of the fonts that are used for the code
+  belowskip=-10pt plus 5pt,
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                % sets automatic line breaking
+  captionpos=b,                   % sets the caption-position to bottom
+  commentstyle=\color{s14a},      % comment style
+  escapeinside={(*}{*)},          % if you want to add LaTeX within your code
+  frame=single,                   % adds a frame around the code
+  keywordstyle=\bf\ttfamily\color{s09},      % keyword style
+  morekeywords={*,...},           % if you want to add more keywords to the set
+  numbers=left,                   % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=0pt,                  % how far the line-numbers are from the code
+  numberstyle=\sffamily\tiny\color{dtugray},  % the style that is used for the line-numbers
+  rulecolor=\color{dtugray},      % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,               % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,         % underline spaces within strings only
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{s07},        % string literal style
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  caption=\lstname                  % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\lstdefinestyle{Java}{
+    backgroundcolor=\color[RGB]{240,240,255},
+    basicstyle=\footnotesize\ttfamily,
+    commentstyle=\ttfamily\color{green!40!black},
+    escapeinside={(*}{*)},
+    identifierstyle=\color{black},
+    keywordstyle=\bfseries\color{blue},
+    language=Java,
+    stringstyle=\color{orange},
+    tabsize=2,
+}
+
+\lstdefinestyle{Bash}{
+    basicstyle=\scriptsize\ttfamily\color{black},
+    language=bash,
+    numbers=none,
+    numberstyle=\color{dtured}\tiny,
+    literate={\$}{{\textcolor{dtured}{\$}}}1,
+}
+
+
+
+%%%%%%%%%%%%%%%%
+% Packed lists %
+%%%%%%%%%%%%%%%%
+
+\newenvironment{packed_enum}{
+\begin{enumerate}
+  \setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+\newenvironment{packed_item}{
+\begin{itemize}
+  \setlength{\itemsep}{0pt}
+  \setlength{\itemindent}{-10pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{
+\end{itemize}
+}
