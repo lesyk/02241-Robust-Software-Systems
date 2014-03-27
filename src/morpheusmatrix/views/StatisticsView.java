@@ -30,7 +30,7 @@ import org.eclipse.swt.SWT;
  * <p>
  */
 
-public class SampleView extends ViewPart {
+public class StatisticsView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -58,7 +58,7 @@ public class SampleView extends ViewPart {
 		public void dispose() {
 		}
 		public Object[] getElements(Object parent) {
-			return new String[] { "One", "Two", "Three" };
+			return new String[] { "Cyclomatic complexity", "Code duplication", "Lines of codes and their growth over time", "Analyze package/module/variable naming against proposed scheme", "Unit dependencies" };
 		}
 	}
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -79,7 +79,7 @@ public class SampleView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public SampleView() {
+	public StatisticsView() {
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class SampleView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				SampleView.this.fillContextMenu(manager);
+				StatisticsView.this.fillContextMenu(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -177,7 +177,7 @@ public class SampleView extends ViewPart {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"Sample View",
+			"Statistics View",
 			message);
 	}
 

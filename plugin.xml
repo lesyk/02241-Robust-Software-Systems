@@ -5,14 +5,14 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="Sample Category"
+            name="A Statistics Category"
             id="MorpheusMatrix">
       </category>
       <view
-            name="Sample View"
+            name="Statistics View"
             icon="icons/sample.gif"
             category="MorpheusMatrix"
-            class="morpheusmatrix.views.SampleView"
+            class="morpheusmatrix.views.StatisticsView"
             id="morpheusmatrix.views.SampleView">
       </view>
    </extension>
