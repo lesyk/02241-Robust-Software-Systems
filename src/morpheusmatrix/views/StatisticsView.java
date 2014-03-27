@@ -1,6 +1,8 @@
 package morpheusmatrix.views;
 
 
+import java.io.IOException;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
@@ -10,6 +12,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
+
+import morpheusmatrix.LinesOfCodeCountingClass;
 
 
 /**
@@ -162,7 +166,17 @@ public class StatisticsView extends ViewPart {
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
+//				should be in different way but
+				if(obj.toString().equals("Lines of codes and their growth over time")){
+					LinesOfCodeCountingClass linesofcodecountingObj = new LinesOfCodeCountingClass();
+					try {
+						linesofcodecountingObj.count();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+//				showMessage("Double-click detected on "+obj.toString());
 			}
 		};
 	}
