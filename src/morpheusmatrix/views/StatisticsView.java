@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 
 import morpheusmatrix.LinesOfCodeCountingClass;
+import morpheusmatrix.CodeDuplicationClass;
 
 
 /**
@@ -174,7 +175,13 @@ public class StatisticsView extends ViewPart {
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+				}else if(obj.toString().equals("Code duplication")){
+					CodeDuplicationClass codeDuplicationClassObj = new CodeDuplicationClass();
+					codeDuplicationClassObj.check();
 				}
 //				showMessage("Double-click detected on "+obj.toString());
 			}
