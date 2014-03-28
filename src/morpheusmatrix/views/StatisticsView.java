@@ -173,15 +173,17 @@ public class StatisticsView extends ViewPart {
 					try {
 						linesofcodecountingObj.count();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}else if(obj.toString().equals("Code duplication")){
 					CodeDuplicationClass codeDuplicationClassObj = new CodeDuplicationClass();
-					codeDuplicationClassObj.check();
+					try {
+						codeDuplicationClassObj.check();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 //				showMessage("Double-click detected on "+obj.toString());
 			}

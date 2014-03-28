@@ -1,41 +1,59 @@
 package morpheusmatrix;
 
-import org.eposoft.jccd.data.JCCDFile;
-import org.eposoft.jccd.detectors.APipeline;
-import org.eposoft.jccd.detectors.ASTDetector;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.harukizaemon.simian.AuditListener;
+import com.harukizaemon.simian.Checker;
+import com.harukizaemon.simian.FileLoader;
+import com.harukizaemon.simian.Option;
+import com.harukizaemon.simian.Options;
+import com.harukizaemon.simian.StreamLoader;
 
 public class CodeDuplicationClass {
-	public void check() {
-////        File a = new File("/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/plugin.xml");
-//        
-//        APipeline<?> detector = new ASTDetector();
-        JCCDFile[] files = { 
-        	new JCCDFile("/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/src/morpheusmatrix/RabinKarpClass.xml"),
-        	new JCCDFile("/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/src/morpheusmatrix/CopyRabinKarpClass.xml") 
-        };
-//        detector.setSourceFiles(files);
-//        APipeline.printSimilarityGroups(detector.process());
-//-----------------------------------------
-//        AuditListener listener = new MyAuditListener();
-//        SourceFile a = new SourceFile("/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/plugin.xml");
-//        listener.fileProcessed(a);
-//
-//        Options options = new Options();
-//        options.setThreshold(6);
-//        options.setOption(Option.IGNORE_STRINGS, true);
-//
-//        Checker checker = new Checker(listener, options);
+	
+	public void check() throws IOException {
+        AuditListener listener = new CodeDuplicationListenerClass();        
+        Options options = new Options();
+        options.setThreshold(6);
+        options.setOption(Option.IGNORE_STRINGS, true);
+        options.setOption(Option.FAIL_ON_DUPLICATION, true);
+        options.setOption(Option.IGNORE_CHARACTER_CASE, true);
+        options.setOption(Option.IGNORE_CURLY_BRACES, true);
+        options.setOption(Option.IGNORE_IDENTIFIER_CASE, true);
+        options.setOption(Option.IGNORE_MODIFIERS, true);
+        options.setOption(Option.IGNORE_STRING_CASE, true);
 
-//        StreamLoader streamLoader = new StreamLoader(checker);
-
-//        FileLoader fileLoader = new FileLoader(streamLoader);
-
-//        for (int i = 0; i < args.length; ++i) {
-//            loader.load(args[i]);
-//        }
-
-//        if (checker.check()) {
-//            System.out.println("Duplicate lines were found!");
-//        }
+        Checker checker = new Checker(listener, options);
+        StreamLoader streamLoader = new StreamLoader(checker);
+        FileLoader fileLoader = new FileLoader(streamLoader);
+        
+//        File a = new File("/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/test/RabinKarpClass.java");
+//        File b = new File("/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/test/CopyOfRabinKarpClass.java");
+        
+//        add files form projects
+        FileIOClass fileIOObj = new FileIOClass();
+		List<String> projects = fileIOObj.getProjects();
+		List<String> files = new ArrayList<String>();
+		
+		for(String project : projects){
+			System.out.println("Project: "+project);
+			files.addAll(fileIOObj.listFilesForFolder(project));
+		}
+		
+		for(String file : files){
+			try {
+				fileLoader.load(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+        
+        if (checker.check()) {
+        	System.out.println("There are no duplications.");
+        }else{
+        	System.out.println("Duplicate lines were found!");
+        }
     }
 }
