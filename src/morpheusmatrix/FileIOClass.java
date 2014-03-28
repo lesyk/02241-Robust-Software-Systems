@@ -14,6 +14,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 public class FileIOClass {
+	private List<String> files = new ArrayList<String>();
+	
 	public List<String> getProjects(){
 		List<String> projectsList = new ArrayList<String>();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -28,21 +30,23 @@ public class FileIOClass {
 		return projectsList;
 	}
 	
-	public void listFilesForFolder(String path) throws IOException {
+	public List<String> listFilesForFolder(String path) throws IOException {
 		File root = new File(path);
 		File[] list = root.listFiles();
 
-        if(list == null) return;
+        if(list == null) return files;
 
         for(File f : list) {
             if (f.isDirectory()) {
             	listFilesForFolder(f.getAbsolutePath());
 //                System.out.println("Dir:" + f.getAbsoluteFile());
             }else{
-            	System.out.println("File:" + f.getAbsoluteFile());
-            	System.out.println(count(f.getAbsoluteFile().toString()));
+//            	System.out.println("File:" + f.getAbsoluteFile());
+//            	System.out.println(count(f.getAbsoluteFile().toString()));
+            	files.add(f.getAbsoluteFile().toString());
             }
         }
+		return files;
 	}
 	
 	public int count(String filename) throws IOException {

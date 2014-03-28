@@ -1,16 +1,21 @@
 package morpheusmatrix;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LinesOfCodeCountingClass {
 	public void count() throws Exception {
-		FileIOClass file = new FileIOClass();
-//		file.listFilesForFolder("/Users/lesyk/Dropbox/Workspace/MorpheusMatrix");
-		List<String> projects = file.getProjects();
+		FileIOClass fileIOObj = new FileIOClass();
+		List<String> projects = fileIOObj.getProjects();
+		List<String> files = new ArrayList<String>();
 		
 		for(String project : projects){
-			System.out.println(project);
-			file.listFilesForFolder(project);
+			System.out.println("Project: "+project);
+			files.addAll(fileIOObj.listFilesForFolder(project));
+		}
+		
+		for(String file : files){
+			System.out.println("File: " + file + ": " + fileIOObj.count(file));
 		}
 		
 //		String a = "/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/.git";
