@@ -1,7 +1,7 @@
 02241-Robust-Software-Systems
 =============================
 
-Eclipse Code Metrix Plugin
+Eclipse Code Metric Plugin
 
 - Cyclomatic complexity. Measure cyclomatic complexity of single code blocks and identify methods that could be refactored for simplicity and readability.
 - Code duplication. Identify similar blocks of code that could be generalized.
