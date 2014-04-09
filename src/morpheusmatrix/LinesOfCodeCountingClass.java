@@ -2,8 +2,32 @@ package morpheusmatrix;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import org.apache.commons.io.IOUtils;
 
 public class LinesOfCodeCountingClass {
+	public Repository initRepo(String location) throws Exception {
+		FileRepositoryBuilder builder = new FileRepositoryBuilder();
+//		Repository repository = builder.setGitDir(new File("/Users/lesyk/Dropbox/runtime-EclipseApplication/test/.git"))
+        Repository repository = builder.setGitDir(new File(location +"/.git"))
+                .readEnvironment() // scan environment GIT_* variables
+                .findGitDir() // scan up the file system tree
+                .build();
+        return repository;
+	}
+	
 	public void count() throws Exception {
 		FileIOClass fileIOObj = new FileIOClass();
 		List<String> projects = fileIOObj.getProjects();
@@ -12,45 +36,74 @@ public class LinesOfCodeCountingClass {
 		for(String project : projects){
 			System.out.println("Project: "+project);
 			files.addAll(fileIOObj.listFilesForFolder(project));
+			
+			Repository repository = initRepo(project+"/");
+			
+	        Iterable<RevCommit> logs = new Git(repository).log()
+	                .all()
+	                .call();
+	        int count = 0;
+	        for (RevCommit rev : logs) {
+	            System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+	            count++;
+	        }
+	        System.out.println("Had " + count + " commits overall on current branch");
+			
+			for(String file : files){
+				System.out.println("File: " + file + ":");
+				System.out.print(fileIOObj.count(file));
+		        
+				String gitLocation = file;
+		        gitLocation = gitLocation.replace(project+"/","");
+		        
+		        logs = new Git(repository).log()
+		                // for all log.all()
+		                .addPath(gitLocation)
+		                .call();
+		        count = 0;
+		        for (RevCommit rev : logs) {
+		        	
+		            // find the HEAD
+		            ObjectId lastCommitId = repository.resolve(rev.getId().getName());
+
+		            // a RevWalk allows to walk over commits based on some filtering that is defined
+		            RevWalk revWalk = new RevWalk(repository);
+		            RevCommit commit = revWalk.parseCommit(lastCommitId);
+		            // and using commit's tree find the path
+		            RevTree tree = commit.getTree();
+//		            System.out.println("Having tree: " + tree);
+
+		            // now try to find a specific file
+		            TreeWalk treeWalk = new TreeWalk(repository);
+		            treeWalk.addTree(tree);
+		            treeWalk.setRecursive(true);
+		            treeWalk.setFilter(PathFilter.create(gitLocation));
+		            if (!treeWalk.next()) {
+		                throw new IllegalStateException("Did not find expected file '"+file+"'");
+		            }
+
+		            ObjectId objectId = treeWalk.getObjectId(0);
+		            ObjectLoader loader = repository.open(objectId);
+
+		            // and then one can the loader to read the file
+//		            loader.copyTo(System.out);
+		            
+		            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		            // and then one can the loader to read the file
+		            loader.copyTo(stream);
+
+		            System.out.print(" " + IOUtils.readLines(new ByteArrayInputStream(stream.toByteArray())).size());
+		        	
+//		            System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+		            count++;
+		        }
+		        System.out.println("");
+		        System.out.println("Had " + count + " commits on '"+file+"'");
+			}
+			
+	        repository.close();
+	        
+	        files.clear();
 		}
-		
-		for(String file : files){
-			System.out.println("File: " + file + ": " + fileIOObj.count(file));
-		}
-		
-//		String a = "/Users/lesyk/Dropbox/Workspace/MorpheusMatrix/.git";
-//		File gitDir = new File(a);		
-//	    Git git = Git.open(gitDir);
-//	    Status status=git.status().call();
-//	    String oldHash = "393234c07e74be8ca89bd57c780f665564f04653";
-//	 
-//	    ObjectId headId = git.getRepository().resolve("HEAD^{tree}");
-//	    ObjectId oldId = git.getRepository().resolve(oldHash + "^{tree}");
-//	 
-//	    ObjectReader reader = git.getRepository().newObjectReader();
-//	     
-//	    CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-//	    oldTreeIter.reset(reader, oldId);
-//	    CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
-//	    newTreeIter.reset(reader, headId);
-//	 
-//	    List<DiffEntry> diffs= git.diff()
-//	            .setNewTree(newTreeIter)
-//	            .setOldTree(oldTreeIter)
-//	            .call();
-//	     
-//	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-//	    DiffFormatter df = new DiffFormatter(out);
-//	    df.setRepository(git.getRepository());
-//	 
-//	    for(DiffEntry diff : diffs)
-//	    {
-//	      df.setContext(0);
-//	      df.format(diff);
-//	      diff.getOldId();
-//	      String diffText = out.toString("UTF-8");
-//	      System.out.println(diffText);
-//	      out.reset();
-//	    }
-	}
+    }
 }
