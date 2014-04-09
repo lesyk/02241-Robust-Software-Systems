@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -30,6 +32,17 @@ public class FileIOClass {
 		return projectsList;
 	}
 	
+	private static Pattern fileExtnPtrn = Pattern.compile("([^\\s]+(\\.(?i)(java|ruby|js))$)");
+    
+    public static boolean validateFileExtn(String userName){
+         
+        Matcher mtch = fileExtnPtrn.matcher(userName);
+        if(mtch.matches()){
+            return true;
+        }
+        return false;
+    }
+	
 	public List<String> listFilesForFolder(String path) throws IOException {
 		File root = new File(path);
 		File[] list = root.listFiles();
@@ -43,7 +56,9 @@ public class FileIOClass {
             }else{
 //            	System.out.println("File:" + f.getAbsoluteFile());
 //            	System.out.println(count(f.getAbsoluteFile().toString()));
-            	files.add(f.getAbsoluteFile().toString());
+            	if(validateFileExtn(f.getName())){
+            		files.add(f.getAbsoluteFile().toString());
+            	}
             }
         }
 		return files;
