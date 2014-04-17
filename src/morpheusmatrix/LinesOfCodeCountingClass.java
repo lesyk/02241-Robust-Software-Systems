@@ -33,12 +33,16 @@ public class LinesOfCodeCountingClass {
 		List<String> projects = fileIOObj.getProjects();
 		List<String> files = new ArrayList<String>();
 		
+		//get all projects
 		for(String project : projects){
 			System.out.println("Project: "+project);
+			
+			//getting all files from project
 			files.addAll(fileIOObj.listFilesForFolder(project));
 			
 			Repository repository = initRepo(project+"/");
 			
+			//getting all commits for project
 	        Iterable<RevCommit> logs = new Git(repository).log()
 	                .all()
 	                .call();
@@ -49,6 +53,7 @@ public class LinesOfCodeCountingClass {
 	        }
 	        System.out.println("Had " + count + " commits overall on current branch");
 			
+	        //getting all commits for each file
 			for(String file : files){
 				System.out.println("File: " + file + ":");
 				System.out.print(fileIOObj.count(file));
@@ -106,4 +111,32 @@ public class LinesOfCodeCountingClass {
 	        files.clear();
 		}
     }
+	
+//	public void count() throws Exception {
+//		
+//		get all projects
+//		for(String project : projects){
+//			System.out.println("Project: "+project);
+//			
+//			getting all files from project
+//			
+//			init repositor
+//			
+//			getting all commits for project
+//			
+//	        getting all commits for each file
+//			for(String file : files){
+//				System.out.println("File: " + file + ":");
+//				System.out.print(fileIOObj.count(file));
+//	
+//				get all commits for file
+//	
+//		        for each commit
+//		        	count lines of code
+//				end
+//			}
+//			
+//	        close repository
+//	        
+//    }
 }
