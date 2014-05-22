@@ -1,30 +1,19 @@
 package morpheusmatrix;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IInitializer;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class CodeDependency {
 
@@ -39,7 +28,7 @@ public class CodeDependency {
 	public void count()
 	{
 		analyzeProjects(ResourcesPlugin.getWorkspace().getRoot());
-		System.out.print("Nr of Classes " + dependencies.size());
+		System.out.println("# of Classes " + dependencies.size());
 		
 		printMap(dependencies);
 	}
@@ -47,10 +36,12 @@ public class CodeDependency {
 	private void printMap(Map<String, HashMap<String, Double>> mp) {
 		
 		for(Map.Entry<String, HashMap<String, Double>> entry : mp.entrySet()){
-			System.out.println("Type " + entry.getKey() + " dependes on:");
-			for(Map.Entry<String, Double> dep: entry.getValue().entrySet())
-			{
-				System.out.println("\t" + dep.getKey() + " with level " + dep.getValue());
+			if(entry.getValue().entrySet().size() != 0){
+				System.out.println("Type " + entry.getKey() + " dependes on:");
+				for(Map.Entry<String, Double> dep: entry.getValue().entrySet())
+				{
+					System.out.println("\t" + dep.getKey() + " with level " + dep.getValue());
+				}
 			}
 		}
 	}

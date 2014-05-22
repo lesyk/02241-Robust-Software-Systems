@@ -13,14 +13,13 @@ public class FieldDeclarationVisitor extends ASTVisitor {
 	}
 
 	public boolean visit(SimpleType type) {
-		System.out.println("Field +1: "
-				+ type.getName().getFullyQualifiedName());
+		System.out.println("Field +1: " + type.getName().getFullyQualifiedName());
 		String typeName = type.getName().getFullyQualifiedName();
 		if (depList.containsKey(typeName)) {
 			Double currDepLevel = depList.get(typeName);
-			depList.put(typeName, currDepLevel + 0.5);
+			depList.put(typeName, currDepLevel + 1.0);
 		} else {
-			depList.put(typeName, 0.5);
+			depList.put(typeName, 1.0);
 		}
 		return true;
 	}
